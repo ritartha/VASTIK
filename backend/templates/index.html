@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Mobile Nav Overlay -->
+<div class="nav-overlay" id="navOverlay"></div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="navbar" id="navbar">
+    <div class="container">
+        <a href="#home" class="navbar-brand" id="navbarBrand">
+            <img src="{% static 'images/mandala.svg' %}" alt="VASTIK Mandala">
+            <span>VASTIK</span>
+        </a>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#home" class="active">Home</a>
+            <a href="#about">About</a>
+            <a href="#store">Store</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#contact">Contact</a>
+            <a href="#store" class="nav-cta">Browse Store</a>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section class="hero" id="home">
+    <div class="hero-bg">
+        <img src="{% static 'images/hero-bg.png' %}" alt="VASTIK Hero Background">
+    </div>
+    <div class="hero-particles" id="heroParticles"></div>
+
+    <div class="hero-content">
+        <img src="{% static 'images/mandala.svg' %}" alt="" class="hero-mandala">
+        <h1>VASTIK</h1>
+        <p class="tagline">Where Indian Art Meets the Metaverse</p>
+        <div class="hero-buttons">
+            <a href="#store" class="btn btn-primary">
+                <i class="fas fa-store"></i> Browse Store
+            </a>
+            <a href="secondlife://VASTIK/128/128/25" target="_blank" class="btn btn-outline">
+                <i class="fas fa-globe"></i> Visit Inworld
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     ABOUT SECTION
+     ============================================================ -->
+<section class="section about" id="about">
+    <div class="container">
+        <div class="section-title fade-in">
+            <h2>About VASTIK</h2>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>Bringing the rich heritage of Indian art and culture into the virtual worlds</p>
+        </div>
+
+        <p class="about-text fade-in">
+            VASTIK is a premium Second Life store dedicated to crafting authentic Indian-themed 
+            virtual goods. From intricately designed mesh structures inspired by ancient temples 
+            to vibrant textures reflecting the colors of Indian festivals, every product is 
+            created with passion and cultural respect. We bridge the gap between traditional 
+            artistry and the digital metaverse.
+        </p>
+
+        <div class="about-cards">
+            <div class="about-card fade-in">
+                <div class="about-card-icon">
+                    <i class="fas fa-cubes"></i>
+                </div>
+                <h3>Mesh Creations</h3>
+                <p>
+                    Hand-crafted 3D mesh products including temple gates, furniture, 
+                    decorative items, and architectural elements with authentic Indian designs 
+                    and optimized land impact.
+                </p>
+            </div>
+
+            <div class="about-card fade-in">
+                <div class="about-card-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>LSL Scripts</h3>
+                <p>
+                    Powerful and efficient LSL scripts for vendors, particle effects, 
+                    interactive objects, and automation. Clean code with configuration 
+                    notecards and documentation.
+                </p>
+            </div>
+
+            <div class="about-card fade-in">
+                <div class="about-card-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h3>Textures</h3>
+                <p>
+                    High-resolution texture packs featuring traditional Indian fabrics, 
+                    henna patterns, rangoli designs, and ornamental motifs. Perfect for 
+                    clothing and décor.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     STORE / MARKETPLACE SECTION
+     ============================================================ -->
+<section class="section store" id="store">
+    <div class="container">
+        <div class="section-title fade-in">
+            <h2>Marketplace</h2>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>Explore our collection of premium Indian-themed virtual goods</p>
+        </div>
+
+        <!-- Category Filter Tabs -->
+        <div class="category-tabs fade-in" id="categoryTabs">
+            <button class="category-tab active" onclick="filterCategory('', this)">All</button>
+            <button class="category-tab" onclick="filterCategory('Mesh', this)">Mesh</button>
+            <button class="category-tab" onclick="filterCategory('Script', this)">Scripts</button>
+            <button class="category-tab" onclick="filterCategory('Texture', this)">Textures</button>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="products-loading" id="productsLoading">
+            <div class="spinner"></div>
+            <p>Loading products...</p>
+        </div>
+
+        <!-- Products Grid (populated by JS) -->
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+</section>
+
+<!-- ============================================================
+     GALLERY SECTION
+     ============================================================ -->
+<section class="section gallery" id="gallery">
+    <div class="container">
+        <div class="section-title fade-in">
+            <h2>Gallery</h2>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>A showcase of our finest creations and in-world builds</p>
+        </div>
+
+        <!-- Gallery Grid (populated by JS) -->
+        <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+    <div class="lightbox-content">
+        <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close lightbox">&times;</button>
+        <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)" aria-label="Previous image">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <img id="lightboxImage" src="" alt="Gallery Image">
+        <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)" aria-label="Next image">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <p class="lightbox-title" id="lightboxTitle"></p>
+    </div>
+</div>
+
+<!-- ============================================================
+     SOCIALS SECTION
+     ============================================================ -->
+<section class="section socials" id="socials">
+    <div class="container">
+        <div class="section-title fade-in">
+            <h2>Connect With Us</h2>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>Follow us across platforms and join our community</p>
+        </div>
+
+        <div class="socials-icons fade-in">
+            <a href="{{ social_links.facebook }}" target="_blank" rel="noopener" class="social-link" id="socialFacebook">
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+            </a>
+            <a href="{{ social_links.discord }}" target="_blank" rel="noopener" class="social-link" id="socialDiscord">
+                <i class="fab fa-discord"></i>
+                <span>Discord</span>
+            </a>
+            <a href="{{ social_links.instagram }}" target="_blank" rel="noopener" class="social-link" id="socialInstagram">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+            <a href="{{ social_links.flickr }}" target="_blank" rel="noopener" class="social-link" id="socialFlickr">
+                <i class="fab fa-flickr"></i>
+                <span>Flickr</span>
+            </a>
+            <a href="{{ social_links.sl_profile }}" target="_blank" rel="noopener" class="social-link" id="socialSL">
+                <i class="fas fa-user-circle"></i>
+                <span>SL Profile</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CONTACT SECTION
+     ============================================================ -->
+<section class="section contact" id="contact">
+    <div class="container">
+        <div class="section-title fade-in">
+            <h2>Get In Touch</h2>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>Verify your Second Life identity and send us a message</p>
+        </div>
+
+        <div class="contact-wrapper fade-in">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" id="stepIndicator1">
+                    <span class="step-number">1</span>
+                </div>
+                <div class="step" id="stepIndicator2">
+                    <span class="step-line"></span>
+                    <span class="step-number">2</span>
+                </div>
+                <div class="step" id="stepIndicator3">
+                    <span class="step-line"></span>
+                    <span class="step-number">3</span>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form" id="contactFormSteps">
+                <!-- Step 1: SL Name -->
+                <div class="form-step active" id="step1">
+                    <h3 class="text-gold mb-2" style="font-size: 1.3rem;">Enter Your SL Name</h3>
+                    <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                        We'll send a verification code to confirm your Second Life identity.
+                    </p>
+                    <div class="form-group">
+                        <label for="slName">Second Life Username</label>
+                        <input type="text" id="slName" name="sl_name" 
+                               placeholder="e.g. JohnDoe Resident" autocomplete="off">
+                    </div>
+                    <div class="form-error" id="step1Error"></div>
+                    <button class="btn btn-primary btn-form" id="sendOtpBtn" onclick="sendOTP()">
+                        <i class="fas fa-paper-plane"></i> Send OTP
+                    </button>
+                </div>
+
+                <!-- Step 2: Verify OTP -->
+                <div class="form-step" id="step2">
+                    <h3 class="text-gold mb-2" style="font-size: 1.3rem;">Verify OTP</h3>
+                    <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                        Enter the 6-digit code sent to your SL messages.
+                        <br><em>(Check your Django console for the OTP)</em>
+                    </p>
+                    <div class="form-group">
+                        <label>Verification Code</label>
+                        <div class="otp-input-group">
+                            <input type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                            <input type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                            <input type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                            <input type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                            <input type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                            <input type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="form-error" id="step2Error"></div>
+                    <button class="btn btn-primary btn-form" id="verifyOtpBtn" onclick="verifyOTP()">
+                        <i class="fas fa-check-circle"></i> Verify OTP
+                    </button>
+                </div>
+
+                <!-- Step 3: Message -->
+                <div class="form-step" id="step3">
+                    <h3 class="text-gold mb-2" style="font-size: 1.3rem;">Send Your Message</h3>
+                    <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                        Identity verified! Now tell us what's on your mind.
+                    </p>
+                    <div class="form-group">
+                        <label for="contactTopic">Topic</label>
+                        <select id="contactTopic" name="topic">
+                            <option value="">Select a topic...</option>
+                            <option value="Commission Work">Commission Work</option>
+                            <option value="Product Related Issue">Product Related Issue</option>
+                            <option value="Complaints">Complaints</option>
+                            <option value="Suggestions">Suggestions</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMessage">Message</label>
+                        <textarea id="contactMessage" name="message" 
+                                  placeholder="Tell us about your query, suggestion, or feedback..."></textarea>
+                    </div>
+                    <div class="form-error" id="step3Error"></div>
+                    <button class="btn btn-primary btn-form" id="submitContactBtn" onclick="submitContact()">
+                        <i class="fas fa-envelope"></i> Submit Message
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success State -->
+            <div class="contact-form form-success" id="contactSuccess" style="display: none;">
+                <i class="fas fa-check-circle"></i>
+                <h3>Message Sent!</h3>
+                <p>Thank you for reaching out. We'll get back to you in-world soon.</p>
+                <p class="mt-3">
+                    <a href="#home" class="btn btn-outline" style="display: inline-flex; width: auto;">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer" id="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <!-- Brand -->
+            <div class="footer-brand">
+                <img src="{% static 'images/mandala.svg' %}" alt="VASTIK">
+                <h3>VASTIK</h3>
+                <p>
+                    Where Indian Art Meets the Metaverse. 
+                    Premium mesh, scripts, and textures crafted with cultural authenticity 
+                    for the Second Life community.
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#store">Store</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Categories -->
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="#store" onclick="setTimeout(()=>filterCategory('Mesh', document.querySelectorAll('.category-tab')[1]), 500)">Mesh</a></li>
+                    <li><a href="#store" onclick="setTimeout(()=>filterCategory('Script', document.querySelectorAll('.category-tab')[2]), 500)">Scripts</a></li>
+                    <li><a href="#store" onclick="setTimeout(()=>filterCategory('Texture', document.querySelectorAll('.category-tab')[3]), 500)">Textures</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect -->
+            <div class="footer-col">
+                <h4>Connect</h4>
+                <div class="footer-social">
+                    <a href="{{ social_links.facebook }}" target="_blank" rel="noopener" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="{{ social_links.discord }}" target="_blank" rel="noopener" aria-label="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="{{ social_links.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="{{ social_links.flickr }}" target="_blank" rel="noopener" aria-label="Flickr">
+                        <i class="fab fa-flickr"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 VASTIK — All rights reserved.</p>
+            <p>Designed for Second Life Residents</p>
+        </div>
+    </div>
+</footer>
+
+{% endblock %}
