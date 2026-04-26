@@ -19,7 +19,7 @@ services:
     command: gunicorn vastik.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
       - ./backend:/app
-      - ./frontend/static:/app/frontend_static
+      - ./frontend:/app/../frontend
       - media_data:/app/media
     ports:
       - "8000:8000"
@@ -27,6 +27,7 @@ services:
       - .env
     environment:
       - DATABASE_URL=postgres://vastik_user:vastik_pass@db:5432/vastik_db
+      - DJANGO_SETTINGS_MODULE=vastik.settings.production
     depends_on:
       - db
 

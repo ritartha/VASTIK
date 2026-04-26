@@ -2,6 +2,7 @@ FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=vastik.settings.production
 
 WORKDIR /app
 
@@ -14,9 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
-COPY backend/ .
-COPY frontend/static/ /app/frontend_static/
+# Copy project — maintain directory structure expected by settings
+COPY backend/ ./
+COPY frontend/ ../frontend/
 
 # Collect static files
 RUN python manage.py collectstatic --noinput || true

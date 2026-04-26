@@ -43,22 +43,31 @@ class SendOTPView(APIView):
         sl_name = serializer.validated_data['sl_name']
         otp_code = f"{random.randint(100000, 999999)}"
 
-        # Create or update OTP record for this SL name
-        contact, created = ContactMessage.objects.get_or_create(
+        # Find or create OTP record for this SL name
+        # Clean up any stale unverified records first to prevent duplicates
+        existing = ContactMessage.objects.filter(
             sl_name=sl_name,
             otp_verified=False,
             submitted_at__isnull=True,
-            defaults={
-                'otp_code': otp_code,
-                'otp_created_at': timezone.now(),
-                'topic': 'Others',
-                'message': '',
-            }
         )
-        if not created:
+        contact = existing.first()
+
+        if contact:
+            # Update existing unverified record
             contact.otp_code = otp_code
             contact.otp_created_at = timezone.now()
             contact.save(update_fields=['otp_code', 'otp_created_at'])
+            # Clean up any additional duplicates from race conditions
+            existing.exclude(pk=contact.pk).delete()
+        else:
+            # Create a new record
+            contact = ContactMessage.objects.create(
+                sl_name=sl_name,
+                otp_code=otp_code,
+                otp_created_at=timezone.now(),
+                topic='Others',
+                message='',
+            )
 
         # ============================================================
         # IN PRODUCTION: Integrate with SL bot or email service to

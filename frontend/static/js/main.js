@@ -449,7 +449,7 @@ async function sendOTP() {
 
     // Loading state
     btn.disabled = true;
-    btn.textContent = 'Sending OTP...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
 
     const result = await apiFetch('/contact/send-otp/', {
         method: 'POST',
@@ -457,7 +457,7 @@ async function sendOTP() {
     });
 
     btn.disabled = false;
-    btn.textContent = 'Send OTP';
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
 
     if (result.success) {
         hideError(errorEl);
@@ -487,7 +487,7 @@ async function verifyOTP() {
 
     // Loading state
     btn.disabled = true;
-    btn.textContent = 'Verifying...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
 
     const result = await apiFetch('/contact/verify-otp/', {
         method: 'POST',
@@ -495,7 +495,7 @@ async function verifyOTP() {
     });
 
     btn.disabled = false;
-    btn.textContent = 'Verify OTP';
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
 
     if (result.success) {
         contactToken = result.data.token;
@@ -524,7 +524,7 @@ async function submitContact() {
 
     // Loading state
     btn.disabled = true;
-    btn.textContent = 'Submitting...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
     const result = await apiFetch('/contact/submit/', {
         method: 'POST',
@@ -532,7 +532,7 @@ async function submitContact() {
     });
 
     btn.disabled = false;
-    btn.textContent = 'Submit Message';
+    btn.innerHTML = '<i class="fas fa-envelope"></i> Submit Message';
 
     if (result.success) {
         hideError(errorEl);

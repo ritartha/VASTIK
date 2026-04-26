@@ -11,7 +11,14 @@ DATABASES = {
 }
 
 # Simpler static file storage for development
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 # Email — print to console
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

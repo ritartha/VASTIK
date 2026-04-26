@@ -41,6 +41,7 @@ class ProductAdmin(admin.ModelAdmin):
     price_display.admin_order_field = 'price'
 
 
+@admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ['product', 'order', 'image_preview']
     readonly_fields = ['image_preview']
