@@ -1,15 +1,18 @@
 /* ============================================================
    VASTIK — Main JavaScript
    Handles API calls, slideshows, OTP flow, lightbox, animations
+   Multi-page aware (Home, Store, Gallery)
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
     initNavbar();
     initScrollAnimations();
     initHeroParticles();
+    initPageHeaderParticles();
     loadProducts();
     loadGallery();
     initContactForm();
+    initCategoryFromURL();
 });
 
 /* ============================================================
@@ -35,7 +38,7 @@ async function apiFetch(endpoint, options = {}) {
 }
 
 /* ============================================================
-   1. NAVBAR
+   1. NAVBAR (multi-page aware)
    ============================================================ */
 function initNavbar() {
     const navbar = document.getElementById('navbar');
@@ -68,12 +71,20 @@ function initNavbar() {
         document.body.style.overflow = '';
     });
 
-    // Smooth scroll for nav links
-    document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+    // Smart nav link handling — smooth scroll on same page, navigate on different pages
+    document.querySelectorAll('.nav-links a[href*="#"]').forEach(link => {
         link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const target = document.querySelector(link.getAttribute('href'));
+            const href = link.getAttribute('href');
+            const hashIndex = href.indexOf('#');
+            if (hashIndex === -1) return;
+
+            const hash = href.substring(hashIndex + 1);
+            const target = document.getElementById(hash);
+
             if (target) {
+                // Target exists on this page — smooth scroll
+                e.preventDefault();
+
                 // Close mobile menu
                 hamburger.classList.remove('active');
                 navLinks.classList.remove('open');
@@ -85,27 +96,45 @@ function initNavbar() {
                 const y = target.getBoundingClientRect().top + window.scrollY - offset;
                 window.scrollTo({ top: y, behavior: 'smooth' });
             }
+            // If target doesn't exist on this page, let browser navigate normally
         });
     });
 
-    // Active link tracking
-    const sections = document.querySelectorAll('section[id]');
-    window.addEventListener('scroll', () => {
-        let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            if (window.scrollY >= sectionTop) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
+    // Close mobile menu on non-hash link clicks
+    document.querySelectorAll('.nav-links a:not([href*="#"])').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('open');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
         });
     });
+
+    // Active link tracking via scroll (only on home page)
+    const isHomePage = window.location.pathname === '/';
+    if (isHomePage) {
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                const href = link.getAttribute('href');
+                // Only update hash-based links on home page
+                if (href.includes('#')) {
+                    link.classList.remove('active');
+                    if (href.endsWith(`#${current}`) || (current === 'home' && href === '/')) {
+                        link.classList.add('active');
+                    }
+                }
+            });
+        });
+    }
 }
 
 /* ============================================================
@@ -138,8 +167,17 @@ function initScrollAnimations() {
 function initHeroParticles() {
     const container = document.getElementById('heroParticles');
     if (!container) return;
+    createParticles(container, 30);
+}
 
-    for (let i = 0; i < 30; i++) {
+function initPageHeaderParticles() {
+    const container = document.getElementById('pageHeaderParticles');
+    if (!container) return;
+    createParticles(container, 15);
+}
+
+function createParticles(container, count) {
+    for (let i = 0; i < count; i++) {
         const particle = document.createElement('div');
         particle.classList.add('particle');
         particle.style.left = `${Math.random() * 100}%`;
@@ -159,6 +197,7 @@ let allProducts = [];
 async function loadProducts(category = '') {
     const grid = document.getElementById('productsGrid');
     const loading = document.getElementById('productsLoading');
+    if (!grid) return; // Not on store page
 
     // Show loading
     grid.innerHTML = '';
@@ -291,17 +330,35 @@ function initSlideshows() {
 }
 
 /* Category Filter */
-function initCategoryFilter() {
-    // Already handled via onclick in HTML
-}
-
 function filterCategory(category, btn) {
     // Update active tab
     document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
-    btn.classList.add('active');
+    if (btn) btn.classList.add('active');
 
     // Reload products
     loadProducts(category);
+}
+
+/* Auto-apply category filter from URL query parameter */
+function initCategoryFromURL() {
+    const grid = document.getElementById('productsGrid');
+    if (!grid) return; // Not on store page
+
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get('category');
+
+    if (category) {
+        // Find and activate the matching tab
+        const tabs = document.querySelectorAll('.category-tab');
+        tabs.forEach(tab => {
+            tab.classList.remove('active');
+            if (tab.dataset.category === category) {
+                tab.classList.add('active');
+            }
+        });
+        // Load filtered products
+        loadProducts(category);
+    }
 }
 
 // Expose to global scope for onclick handlers
@@ -315,7 +372,7 @@ let lightboxIndex = 0;
 
 async function loadGallery() {
     const grid = document.getElementById('galleryGrid');
-    if (!grid) return;
+    if (!grid) return; // Not on gallery page
 
     const result = await apiFetch('/gallery/');
 
@@ -364,6 +421,7 @@ function openLightbox(index) {
 
 function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
+    if (!lightbox) return;
     lightbox.classList.remove('active');
     document.body.style.overflow = '';
 }
@@ -399,6 +457,8 @@ let currentStep = 1;
 function initContactForm() {
     // OTP input auto-advance
     const otpInputs = document.querySelectorAll('.otp-input-group input');
+    if (otpInputs.length === 0) return; // Not on contact page
+
     otpInputs.forEach((input, index) => {
         input.addEventListener('input', (e) => {
             const value = e.target.value;

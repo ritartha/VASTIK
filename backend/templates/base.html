@@ -27,10 +27,107 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    {% block content %}{% endblock %}
 
-    <!-- Scripts -->
-    <script src="{% static 'js/main.js' %}"></script>
-    {% block extra_js %}{% endblock %}
+<!-- Mobile Nav Overlay -->
+<div class="nav-overlay" id="navOverlay"></div>
+
+<!-- ============================================================
+     NAVBAR (shared across all pages)
+     ============================================================ -->
+<nav class="navbar" id="navbar">
+    <div class="container">
+        <a href="{% url 'home' %}" class="navbar-brand" id="navbarBrand">
+            <img src="{% static 'images/mandala.svg' %}" alt="VASTIK Mandala">
+            <span>VASTIK</span>
+        </a>
+
+        <div class="nav-links" id="navLinks">
+            <a href="{% url 'home' %}" {% if request.path == '/' %}class="active"{% endif %}>Home</a>
+            <a href="{% url 'home' %}#about">About</a>
+            <a href="{% url 'store-page' %}" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a>
+            <a href="{% url 'gallery-page' %}" {% if request.path == '/gallery/' %}class="active"{% endif %}>Gallery</a>
+            <a href="{% url 'home' %}#contact">Contact</a>
+            <a href="{% url 'store-page' %}" class="nav-cta">Browse Store</a>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<!-- ============================================================
+     FOOTER (shared across all pages)
+     ============================================================ -->
+<footer class="footer" id="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <!-- Brand -->
+            <div class="footer-brand">
+                <img src="{% static 'images/mandala.svg' %}" alt="VASTIK">
+                <h3>VASTIK</h3>
+                <p>
+                    Where Indian Art Meets the Metaverse. 
+                    Premium mesh, scripts, and textures crafted with cultural authenticity 
+                    for the Second Life community.
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'home' %}#about">About</a></li>
+                    <li><a href="{% url 'store-page' %}">Store</a></li>
+                    <li><a href="{% url 'gallery-page' %}">Gallery</a></li>
+                    <li><a href="{% url 'home' %}#contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Categories -->
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="{% url 'store-page' %}?category=Mesh">Mesh</a></li>
+                    <li><a href="{% url 'store-page' %}?category=Script">Scripts</a></li>
+                    <li><a href="{% url 'store-page' %}?category=Texture">Textures</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect -->
+            <div class="footer-col">
+                <h4>Connect</h4>
+                <div class="footer-social">
+                    <a href="{{ social_links.facebook }}" target="_blank" rel="noopener" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="{{ social_links.discord }}" target="_blank" rel="noopener" aria-label="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="{{ social_links.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="{{ social_links.flickr }}" target="_blank" rel="noopener" aria-label="Flickr">
+                        <i class="fab fa-flickr"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} VASTIK — All rights reserved.</p>
+            <p>Designed for Second Life Residents</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>
