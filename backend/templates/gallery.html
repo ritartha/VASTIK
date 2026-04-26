@@ -31,6 +31,15 @@
      ============================================================ -->
 <section class="section gallery" id="gallery">
     <div class="container">
+        <!-- Gallery Category Tabs -->
+        <div class="category-tabs fade-in" id="galleryCategoryTabs">
+            <button class="category-tab active" data-category="" onclick="filterGalleryCategory('', this)">All</button>
+            <button class="category-tab" data-category="Build" onclick="filterGalleryCategory('Build', this)">Builds</button>
+            <button class="category-tab" data-category="Product" onclick="filterGalleryCategory('Product', this)">Products</button>
+            <button class="category-tab" data-category="Event" onclick="filterGalleryCategory('Event', this)">Events</button>
+            <button class="category-tab" data-category="Art" onclick="filterGalleryCategory('Art', this)">Art</button>
+        </div>
+
         <!-- Gallery Grid (populated by JS) -->
         <div class="gallery-grid" id="galleryGrid"></div>
     </div>
@@ -47,7 +56,11 @@
         <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)" aria-label="Next image">
             <i class="fas fa-chevron-right"></i>
         </button>
-        <p class="lightbox-title" id="lightboxTitle"></p>
+        <div class="lightbox-info">
+            <p class="lightbox-title" id="lightboxTitle"></p>
+            <p class="lightbox-description" id="lightboxDescription"></p>
+            <p class="lightbox-counter" id="lightboxCounter"></p>
+        </div>
     </div>
 </div>
 

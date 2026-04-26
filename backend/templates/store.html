@@ -12,9 +12,16 @@
     <div class="page-header-particles" id="pageHeaderParticles"></div>
     <div class="container">
         <div class="page-header-content fade-in">
-
-
-          
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'home' %}">Home</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <span>Marketplace</span>
+            </nav>
+            <h1>Marketplace</h1>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>Premium mesh, scripts, and textures crafted with Indian artistry</p>
         </div>
     </div>
 </section>
@@ -24,6 +31,24 @@
      ============================================================ -->
 <section class="section store" id="store">
     <div class="container">
+        <!-- Store Toolbar: Search + Sort + Count -->
+        <div class="store-toolbar fade-in">
+            <div class="store-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="storeSearchInput" placeholder="Search products..." autocomplete="off">
+            </div>
+            <div class="store-sort">
+                <select id="storeSortSelect" onchange="handleSort(this.value)">
+                    <option value="-created_at">Newest First</option>
+                    <option value="created_at">Oldest First</option>
+                    <option value="price">Price: Low → High</option>
+                    <option value="-price">Price: High → Low</option>
+                    <option value="name">Name: A → Z</option>
+                    <option value="-name">Name: Z → A</option>
+                </select>
+            </div>
+        </div>
+
         <!-- Category Filter Tabs -->
         <div class="category-tabs fade-in" id="categoryTabs">
             <button class="category-tab active" data-category="" onclick="filterCategory('', this)">All</button>
@@ -32,10 +57,16 @@
             <button class="category-tab" data-category="Texture" onclick="filterCategory('Texture', this)">Textures</button>
         </div>
 
-        <!-- Loading Spinner -->
-        <div class="products-loading" id="productsLoading">
-            <div class="spinner"></div>
-            <p>Loading products...</p>
+        <!-- Product Count -->
+        <div class="store-product-count fade-in" id="storeProductCount"></div>
+
+        <!-- Loading Skeleton -->
+        <div class="products-loading" id="productsLoading" style="display:none;">
+            <div class="skeleton-grid">
+                <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+                <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+                <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+            </div>
         </div>
 
         <!-- Products Grid (populated by JS) -->

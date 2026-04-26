@@ -89,6 +89,61 @@
 </section>
 
 <!-- ============================================================
+     STATS COUNTER SECTION
+     ============================================================ -->
+<section class="section stats-section" id="stats">
+    <div class="container">
+        <div class="stats-grid fade-in">
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+                <div class="stat-number" data-target="150">0</div>
+                <div class="stat-label">Products Created</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-number" data-target="500">0</div>
+                <div class="stat-label">Happy Customers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="stat-number" data-target="3">0</div>
+                <div class="stat-label">Years in Second Life</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-star"></i></div>
+                <div class="stat-number" data-target="5">0</div>
+                <div class="stat-label">Star Rating</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     FEATURED PRODUCTS CAROUSEL
+     ============================================================ -->
+<section class="section featured-section" id="featured">
+    <div class="container">
+        <div class="section-title fade-in">
+            <h2>Featured Products</h2>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>Our handpicked creations that showcase the best of VASTIK</p>
+        </div>
+
+        <div class="featured-carousel-wrapper fade-in">
+            <button class="carousel-nav carousel-prev" id="featuredPrev" onclick="scrollFeaturedCarousel(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="featured-carousel" id="featuredCarousel"></div>
+            <button class="carousel-nav carousel-next" id="featuredNext" onclick="scrollFeaturedCarousel(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
      SOCIALS SECTION
      ============================================================ -->
 <section class="section socials" id="socials">
@@ -122,6 +177,31 @@
                 <i class="fas fa-user-circle"></i>
                 <span>SL Profile</span>
             </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS SECTION
+     ============================================================ -->
+<section class="section testimonials-section" id="testimonials">
+    <div class="container">
+        <div class="section-title fade-in">
+            <h2>What Our Customers Say</h2>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>Hear from the Second Life community about their VASTIK experience</p>
+        </div>
+
+        <div class="testimonials-carousel-wrapper fade-in">
+            <button class="carousel-nav carousel-prev" onclick="scrollTestimonialCarousel(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="testimonials-carousel" id="testimonialsCarousel"></div>
+            <button class="carousel-nav carousel-next" onclick="scrollTestimonialCarousel(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 </section>
@@ -196,6 +276,14 @@
                     <button class="btn btn-primary btn-form" id="verifyOtpBtn" onclick="verifyOTP()">
                         <i class="fas fa-check-circle"></i> Verify OTP
                     </button>
+                    <div class="form-step-footer">
+                        <button class="btn-ghost" onclick="goToStep(1)">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button class="btn-ghost" id="resendOtpBtn" onclick="resendOTP()" disabled>
+                            <i class="fas fa-redo"></i> Resend OTP <span id="resendTimer">(60s)</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Step 3: Message -->
@@ -224,6 +312,11 @@
                     <button class="btn btn-primary btn-form" id="submitContactBtn" onclick="submitContact()">
                         <i class="fas fa-envelope"></i> Submit Message
                     </button>
+                    <div class="form-step-footer">
+                        <button class="btn-ghost" onclick="goToStep(2)">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                    </div>
                 </div>
             </div>
 

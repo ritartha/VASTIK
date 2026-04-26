@@ -32,6 +32,11 @@
 <div class="nav-overlay" id="navOverlay"></div>
 
 <!-- ============================================================
+     TOAST NOTIFICATION CONTAINER
+     ============================================================ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ============================================================
      NAVBAR (shared across all pages)
      ============================================================ -->
 <nav class="navbar" id="navbar">
@@ -44,17 +49,27 @@
         <div class="nav-links" id="navLinks">
             <a href="{% url 'home' %}" {% if request.path == '/' %}class="active"{% endif %}>Home</a>
             <a href="{% url 'home' %}#about">About</a>
-            <a href="{% url 'store-page' %}" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a>
+            <a href="{% url 'store-page' %}" {% if '/store' in request.path %}class="active"{% endif %}>Store</a>
             <a href="{% url 'gallery-page' %}" {% if request.path == '/gallery/' %}class="active"{% endif %}>Gallery</a>
             <a href="{% url 'home' %}#contact">Contact</a>
-            <a href="{% url 'store-page' %}" class="nav-cta">Browse Store</a>
+            <a href="{% url 'store-page' %}" class="nav-cta">
+                <i class="fas fa-heart nav-wishlist-icon" id="navWishlistIcon" style="display:none;"></i>
+                Browse Store
+            </a>
         </div>
 
-        <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+        <div class="nav-right">
+            <!-- Wishlist indicator -->
+            <a href="{% url 'store-page' %}" class="nav-wishlist" id="navWishlist" title="Wishlist" style="display:none;">
+                <i class="fas fa-heart"></i>
+                <span class="wishlist-badge" id="wishlistBadge">0</span>
+            </a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
     </div>
 </nav>
 
@@ -125,6 +140,11 @@
         </div>
     </div>
 </footer>
+
+<!-- Back to Top Button -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fas fa-chevron-up"></i>
+</button>
 
 <!-- Scripts -->
 <script src="{% static 'js/main.js' %}"></script>

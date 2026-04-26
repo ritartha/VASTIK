@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Product Detail — VASTIK{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     PAGE HEADER
+     ============================================================ -->
+<section class="page-header page-header-compact">
+    <div class="page-header-particles" id="pageHeaderParticles"></div>
+    <div class="container">
+        <div class="page-header-content fade-in">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'home' %}">Home</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <a href="{% url 'store-page' %}">Marketplace</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <span id="breadcrumbProductName">Loading...</span>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     PRODUCT DETAIL
+     ============================================================ -->
+<section class="section product-detail-section" id="productDetail">
+    <div class="container">
+        <!-- Loading state -->
+        <div class="products-loading" id="productDetailLoading">
+            <div class="spinner"></div>
+            <p>Loading product...</p>
+        </div>
+
+        <!-- Product content (populated by JS) -->
+        <div class="product-detail-layout" id="productDetailLayout" style="display:none;">
+            <!-- Image Gallery -->
+            <div class="product-detail-gallery" id="productGallery">
+                <div class="product-detail-main-image" id="productMainImage">
+                    <img src="" alt="" id="mainProductImg">
+                </div>
+                <div class="product-detail-thumbnails" id="productThumbnails"></div>
+            </div>
+
+            <!-- Info Panel -->
+            <div class="product-detail-info">
+                <div class="product-detail-badges" id="productBadges"></div>
+                <div class="product-header">
+                    <span class="product-serial" id="productSerial"></span>
+                    <span class="product-category-tag" id="productCategory"></span>
+                </div>
+                <h1 class="product-detail-name" id="productName"></h1>
+                <div class="product-price product-detail-price" id="productPrice"></div>
+                <div class="product-detail-description" id="productDescription"></div>
+                <div class="product-detail-actions" id="productActions"></div>
+
+                <!-- Wishlist button -->
+                <button class="btn-wishlist-detail" id="wishlistDetailBtn" onclick="toggleWishlistDetail()">
+                    <i class="far fa-heart"></i> <span>Add to Wishlist</span>
+                </button>
+
+                <!-- Share -->
+                <div class="product-detail-share">
+                    <span>Share:</span>
+                    <button onclick="copyProductLink()" class="share-btn" title="Copy link">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        <div class="related-products" id="relatedProducts" style="display:none;">
+            <div class="section-title">
+                <h2>Related Products</h2>
+                <div class="mandala-divider">
+                    <img src="{% static 'images/lotus.svg' %}" alt="">
+                </div>
+            </div>
+            <div class="products-grid products-grid-related" id="relatedProductsGrid"></div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Pass the product ID from Django to JS
+    window.PRODUCT_ID = {{ product_id }};
+</script>
+
+{% endblock %}

@@ -23,12 +23,19 @@ def gallery_page(request):
     return render(request, 'gallery.html')
 
 
+def product_detail_page(request, pk):
+    """Render the product detail page."""
+    return render(request, 'product_detail.html', {'product_id': pk})
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/products/', include('store.urls')),
     path('api/v1/gallery/', include('gallery.urls')),
     path('api/v1/contact/', include('contact.urls')),
+    path('api/v1/testimonials/', include('testimonials.urls')),
     path('store/', store_page, name='store-page'),
+    path('store/product/<int:pk>/', product_detail_page, name='product-detail-page'),
     path('gallery/', gallery_page, name='gallery-page'),
     path('', index, name='home'),
 ]
