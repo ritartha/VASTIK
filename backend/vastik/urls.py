@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/v1/products/', include('store.urls')),
     path('api/v1/gallery/', include('gallery.urls')),
     path('api/v1/contact/', include('contact.urls')),
+    path('api/v1/sl-bridge/', include('sl_bridge.urls')),
     path('api/v1/testimonials/', include('testimonials.urls')),
     path('store/', store_page, name='store-page'),
     path('store/product/<int:pk>/', product_detail_page, name='product-detail-page'),

@@ -16,10 +16,13 @@ env = environ.Env(
     ALLOWED_HOSTS=(list, ['localhost', '127.0.0.1']),
 )
 
-# Read .env file from project root
+# Read .env file — check project root first, then backend dir
+# On Railway, env vars are set in the dashboard so .env may not exist
 ENV_FILE = PROJECT_DIR / '.env'
 if ENV_FILE.exists():
     environ.Env.read_env(str(ENV_FILE))
+elif (BASE_DIR / '.env').exists():
+    environ.Env.read_env(str(BASE_DIR / '.env'))
 
 # Security
 SECRET_KEY = env('SECRET_KEY')
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'gallery',
     'contact',
     'testimonials',
+    'sl_bridge',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +143,7 @@ SOCIAL_LINKS = {
     'flickr': env('SOCIAL_FLICKR', default='#'),
     'sl_profile': env('SOCIAL_SL_PROFILE', default='#'),
 }
+
+# Second Life Bridge
+SL_BRIDGE_SECRET = env('SL_BRIDGE_SECRET', default='')
+

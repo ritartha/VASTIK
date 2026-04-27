@@ -14,6 +14,7 @@ from rest_framework import status
 
 from .models import ContactMessage
 from .serializers import SendOTPSerializer, VerifyOTPSerializer, SubmitContactSerializer
+from sl_bridge.views import send_otp_to_sl
 
 logger = logging.getLogger(__name__)
 
@@ -26,10 +27,8 @@ TOKEN_EXPIRY_SECONDS = 600  # 10 minutes
 class SendOTPView(APIView):
     """
     POST /api/v1/contact/send-otp/
-    Accepts {sl_name}, generates a 6-digit OTP, stores it, and logs it.
-
-    In production, this OTP would be delivered via an SL bot or email.
-    For now, it's printed to the Django console/log.
+    Accepts {sl_name}, generates a 6-digit OTP, stores it,
+    and pushes it to the SL object for in-world delivery.
     """
 
     def post(self, request):
@@ -70,15 +69,24 @@ class SendOTPView(APIView):
             )
 
         # ============================================================
-        # IN PRODUCTION: Integrate with SL bot or email service to
-        # deliver this OTP to the user's Second Life avatar or email.
-        # For now, we print it to the Django console/log.
+        # Push OTP to the in-world SL object for delivery via IM
         # ============================================================
-        logger.info(f"[VASTIK OTP] OTP for '{sl_name}': {otp_code}")
+        sl_delivered = send_otp_to_sl(sl_name, otp_code)
+
+        if sl_delivered:
+            logger.info(f"[VASTIK OTP] OTP for '{sl_name}' delivered to SL object")
+        else:
+            logger.warning(
+                f"[VASTIK OTP] Could not deliver OTP to SL object for '{sl_name}'. "
+                f"OTP: {otp_code} (logged for manual delivery)"
+            )
+
+        # Console log for debugging (remove in production)
         print(f"\n{'='*50}")
         print(f"  VASTIK OTP VERIFICATION")
         print(f"  SL Name: {sl_name}")
         print(f"  OTP Code: {otp_code}")
+        print(f"  SL Delivery: {'✓ Sent' if sl_delivered else '✗ Failed (see logs)'}")
         print(f"  Expires in: {OTP_EXPIRY_MINUTES} minutes")
         print(f"{'='*50}\n")
 
