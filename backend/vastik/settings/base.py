@@ -119,8 +119,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Django REST Framework
+# ── Django REST Framework ─────────────────────────────────────────────────────
+# Authentication classes are intentionally empty:
+#   - All API endpoints use their own OTP / signed-token / shared-secret auth
+#   - SessionAuthentication (DRF default) enforces Django CSRF on every POST
+#     that carries a session cookie, causing 403 Forbidden in production where
+#     CSRF_COOKIE_SECURE=True and DEBUG=False.
+#   - The Django admin is unaffected — it has its own CSRF handling via
+#     CsrfViewMiddleware in MIDDLEWARE above.
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
@@ -147,3 +155,7 @@ SOCIAL_LINKS = {
 # Second Life Bridge
 SL_BRIDGE_SECRET = env('SL_BRIDGE_SECRET', default='')
 
+# Discord Webhook (for contact message notifications)
+DISCORD_WEBHOOK_URL     = env('DISCORD_WEBHOOK_URL',     default='')
+DISCORD_THUMBNAIL_IMAGE = env('DISCORD_THUMBNAIL_IMAGE', default='')
+DISCORD_FOOTER_IMAGE    = env('DISCORD_FOOTER_IMAGE',    default='')
