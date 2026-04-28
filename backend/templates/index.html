@@ -14,7 +14,10 @@
 
     <div class="hero-content">
         <img src="{% static 'images/mandala.svg' %}" alt="" class="hero-mandala">
-        <h1>VASTIK</h1>
+        <div class="hero-logo-container">
+    <img class="hero-logo" src="{% static 'images/logo.svg' %}" alt="VASTIK Logo">
+</div>
+        {% comment %} <h1>VASTIK</h1> {% endcomment %}
         <p class="tagline">Where Indian Art Meets the Metaverse</p>
         <div class="hero-buttons">
             <a href="{% url 'store-page' %}" class="btn btn-primary">
