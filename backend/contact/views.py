@@ -14,6 +14,7 @@ from rest_framework import status
 
 from .models import ContactMessage
 from .serializers import SendOTPSerializer, VerifyOTPSerializer, SubmitContactSerializer
+from .discord import send_discord_notification
 from sl_bridge.views import send_otp_to_sl
 
 logger = logging.getLogger(__name__)
@@ -166,7 +167,8 @@ class VerifyOTPView(APIView):
 class SubmitContactView(APIView):
     """
     POST /api/v1/contact/submit/
-    Accepts {token, topic, message}, validates token, saves message.
+    Accepts {token, topic, message}, validates token, saves message,
+    and fires a Discord webhook notification.
     """
 
     def post(self, request):
@@ -177,8 +179,8 @@ class SubmitContactView(APIView):
                 'error': serializer.errors,
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        token = serializer.validated_data['token']
-        topic = serializer.validated_data['topic']
+        token   = serializer.validated_data['token']
+        topic   = serializer.validated_data['topic']
         message = serializer.validated_data['message']
 
         # Validate signed token
@@ -195,7 +197,7 @@ class SubmitContactView(APIView):
                 'error': 'Invalid verification token.',
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        sl_name = data.get('sl_name')
+        sl_name    = data.get('sl_name')
         contact_id = data.get('contact_id')
 
         try:
@@ -211,11 +213,27 @@ class SubmitContactView(APIView):
                 'error': 'Invalid or already used verification.',
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        # Save the message
-        contact.topic = topic
-        contact.message = message
+        # ── Save the message ──────────────────────────────────────────────
+        contact.topic        = topic
+        contact.message      = message
         contact.submitted_at = timezone.now()
         contact.save(update_fields=['topic', 'message', 'submitted_at'])
+
+        logger.info(
+            f"[VASTIK Contact] Message saved — sl_name='{sl_name}', topic='{topic}'"
+        )
+
+        # ── Fire Discord webhook (non-blocking; failure does not affect response) ──
+        discord_sent = send_discord_notification(
+            sl_name=sl_name,
+            topic=topic,
+            message=message,
+        )
+
+        if not discord_sent:
+            logger.warning(
+                f"[VASTIK Contact] Discord notification failed for message from '{sl_name}'"
+            )
 
         return Response({
             'success': True,
