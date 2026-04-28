@@ -9,7 +9,7 @@
 
 // ── CONFIG ────────────────────────────────────────────────────
 // Your Django backend base URL (no trailing slash)
-string BACKEND_URL    = "https://your-vastik-server.com";
+string BACKEND_URL = "https://vastik-production.up.railway.app";
 // The endpoint where we register our object URL
 string REGISTER_PATH  = "/api/v1/sl-bridge/register-url/";
 // Shared secret — MUST match SL_BRIDGE_SECRET in your Django .env
