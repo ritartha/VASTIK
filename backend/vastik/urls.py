@@ -29,7 +29,7 @@ def product_detail_page(request, pk):
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('malik/', admin.site.urls),
     path('api/v1/products/', include('store.urls')),
     path('api/v1/gallery/', include('gallery.urls')),
     path('api/v1/contact/', include('contact.urls')),
