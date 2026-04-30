@@ -712,7 +712,7 @@ async function loadProductDetail() {
 
     // Name / price / description
     setText('productName', p.name);
-    setText('productPrice', `L$${Number(p.price).toLocaleString()} Linden Dollars`);
+    setText('productPrice', `L$${Number(p.price).toLocaleString()}`);
     setText('productDescription', p.description);
     setText('productSerial', p.serial_number || '');
     setText('productCategory', p.category || '');
