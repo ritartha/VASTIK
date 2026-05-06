@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'contact',
     'testimonials',
     'sl_bridge',
+    'panel',
 ]
 
 MIDDLEWARE = [
@@ -118,6 +119,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Admin panel login URL
+LOGIN_URL = '/panel/login/'
 
 # ── Django REST Framework ─────────────────────────────────────────────────────
 # Authentication classes are intentionally empty:

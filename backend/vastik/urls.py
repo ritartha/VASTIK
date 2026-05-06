@@ -38,6 +38,7 @@ urlpatterns = [
     path('store/', store_page, name='store-page'),
     path('store/product/<int:pk>/', product_detail_page, name='product-detail-page'),
     path('gallery/', gallery_page, name='gallery-page'),
+    path('panel/', include('panel.urls')),
     path('', index, name='home'),
 ]
 

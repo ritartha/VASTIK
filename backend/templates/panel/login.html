@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Admin Login — VASTIK{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     ADMIN LOGIN
+     ============================================================ -->
+<section class="page-header page-header-compact">
+    <div class="page-header-particles" id="pageHeaderParticles"></div>
+    <div class="container">
+        <div class="page-header-content fade-in">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'home' %}">Home</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <span>Admin Panel</span>
+            </nav>
+            <h1>Admin Panel</h1>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>Superuser access only</p>
+        </div>
+    </div>
+</section>
+
+<section class="section panel-login-section">
+    <div class="container">
+        <div class="panel-login-card fade-in">
+            <div class="panel-login-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2>Sign In</h2>
+            <p class="panel-login-subtitle">Enter your superuser credentials to continue</p>
+
+            {% if error %}
+            <div class="panel-alert panel-alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="post" class="panel-login-form" id="panelLoginForm">
+                {% csrf_token %}
+                <div class="panel-form-group">
+                    <label for="username"><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="username" name="username" class="panel-input"
+                           placeholder="Enter username" autocomplete="username" required autofocus>
+                </div>
+                <div class="panel-form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" name="password" class="panel-input"
+                           placeholder="Enter password" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary panel-login-btn" id="panelLoginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard — Admin Panel — VASTIK{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     ADMIN DASHBOARD
+     ============================================================ -->
+<section class="page-header page-header-compact">
+    <div class="page-header-particles" id="pageHeaderParticles"></div>
+    <div class="container">
+        <div class="page-header-content fade-in">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'home' %}">Home</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <span>Admin Panel</span>
+            </nav>
+            <h1>Dashboard</h1>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+            <p>Welcome back, {{ request.user.username }}</p>
+        </div>
+    </div>
+</section>
+
+<section class="section panel-dashboard-section">
+    <div class="container">
+
+        {% if messages %}
+        <div class="panel-messages fade-in">
+            {% for message in messages %}
+            <div class="panel-alert panel-alert-{{ message.tags }}">
+                <i class="fas fa-check-circle"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Stats Cards -->
+        <div class="panel-stats-grid fade-in">
+            <div class="panel-stat-card">
+                <div class="panel-stat-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <div class="panel-stat-info">
+                    <div class="panel-stat-number">{{ total_products }}</div>
+                    <div class="panel-stat-label">Total Products</div>
+                </div>
+            </div>
+            <div class="panel-stat-card">
+                <div class="panel-stat-icon panel-stat-icon-featured">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="panel-stat-info">
+                    <div class="panel-stat-number">{{ featured_count }}</div>
+                    <div class="panel-stat-label">Featured</div>
+                </div>
+            </div>
+            <div class="panel-stat-card">
+                <div class="panel-stat-icon panel-stat-icon-mesh">
+                    <i class="fas fa-cubes"></i>
+                </div>
+                <div class="panel-stat-info">
+                    <div class="panel-stat-number">{{ mesh_count }}</div>
+                    <div class="panel-stat-label">Mesh</div>
+                </div>
+            </div>
+            <div class="panel-stat-card">
+                <div class="panel-stat-icon panel-stat-icon-script">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="panel-stat-info">
+                    <div class="panel-stat-number">{{ script_count }}</div>
+                    <div class="panel-stat-label">Scripts</div>
+                </div>
+            </div>
+            <div class="panel-stat-card">
+                <div class="panel-stat-icon panel-stat-icon-texture">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div class="panel-stat-info">
+                    <div class="panel-stat-number">{{ texture_count }}</div>
+                    <div class="panel-stat-label">Textures</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="panel-actions-card fade-in">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div class="panel-actions-grid">
+                <a href="{% url 'panel-products' %}" class="panel-action-btn">
+                    <i class="fas fa-list"></i>
+                    <span>View All Products</span>
+                </a>
+                <a href="{% url 'panel-product-add' %}" class="panel-action-btn panel-action-btn-primary">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add New Product</span>
+                </a>
+                <a href="{% url 'panel-logout' %}" class="panel-action-btn panel-action-btn-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

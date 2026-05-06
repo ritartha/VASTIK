@@ -52,6 +52,7 @@
             <a href="{% url 'store-page' %}" {% if '/store' in request.path %}class="active"{% endif %}>Store</a>
             <a href="{% url 'gallery-page' %}" {% if request.path == '/gallery/' %}class="active"{% endif %}>Gallery</a>
             <a href="{% url 'home' %}#contact">Contact</a>
+            <a href="{% url 'panel-dashboard' %}" {% if '/panel' in request.path %}class="active"{% endif %}>Admin Panel</a>
             <a href="{% url 'store-page' %}" class="nav-cta">
                 <i class="fas fa-heart nav-wishlist-icon" id="navWishlistIcon" style="display:none;"></i>
                 Browse Store

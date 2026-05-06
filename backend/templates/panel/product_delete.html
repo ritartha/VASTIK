@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Delete Product — Admin Panel — VASTIK{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     DELETE CONFIRMATION
+     ============================================================ -->
+<section class="page-header page-header-compact">
+    <div class="page-header-particles" id="pageHeaderParticles"></div>
+    <div class="container">
+        <div class="page-header-content fade-in">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'home' %}">Home</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <a href="{% url 'panel-dashboard' %}">Admin Panel</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <a href="{% url 'panel-products' %}">Products</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <span>Delete</span>
+            </nav>
+            <h1>Delete Product</h1>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section panel-delete-section">
+    <div class="container">
+        <div class="panel-delete-card fade-in">
+            <div class="panel-delete-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Confirm Deletion</h2>
+            <p class="panel-delete-message">
+                Are you sure you want to permanently delete
+                <strong>"{{ product.serial_number }} — {{ product.name }}"</strong>?
+            </p>
+            <p class="panel-delete-warning">
+                <i class="fas fa-info-circle"></i>
+                This action cannot be undone. All associated images will also be removed.
+            </p>
+
+            <form method="post" class="panel-delete-actions">
+                {% csrf_token %}
+                <a href="{% url 'panel-products' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Cancel
+                </a>
+                <button type="submit" class="btn panel-btn-danger">
+                    <i class="fas fa-trash-alt"></i> Delete Product
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

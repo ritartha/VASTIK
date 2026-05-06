@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }} — Admin Panel — VASTIK{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     PRODUCT FORM (Add / Edit)
+     ============================================================ -->
+<section class="page-header page-header-compact">
+    <div class="page-header-particles" id="pageHeaderParticles"></div>
+    <div class="container">
+        <div class="page-header-content fade-in">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'home' %}">Home</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <a href="{% url 'panel-dashboard' %}">Admin Panel</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <a href="{% url 'panel-products' %}">Products</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <span>{{ page_title }}</span>
+            </nav>
+            <h1>{{ page_title }}</h1>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section panel-form-section">
+    <div class="container">
+        <form method="post" class="panel-product-form" id="panelProductForm">
+            {% csrf_token %}
+
+            <!-- Product Details Card -->
+            <div class="panel-card fade-in">
+                <div class="panel-card-header">
+                    <h3><i class="fas fa-info-circle"></i> Product Details</h3>
+                </div>
+                <div class="panel-card-body">
+                    {% if form.errors %}
+                    <div class="panel-alert panel-alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Please fix the errors below.
+                    </div>
+                    {% endif %}
+
+                    <div class="panel-form-row">
+                        <div class="panel-form-group">
+                            <label for="id_serial_number">Serial Number *</label>
+                            {{ form.serial_number }}
+                            {% if form.serial_number.errors %}
+                                <span class="panel-field-error">{{ form.serial_number.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="panel-form-group">
+                            <label for="id_name">Product Name *</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <span class="panel-field-error">{{ form.name.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="panel-form-row">
+                        <div class="panel-form-group">
+                            <label for="id_category">Category *</label>
+                            {{ form.category }}
+                        </div>
+                        <div class="panel-form-group">
+                            <label for="id_price">Price (L$) *</label>
+                            {{ form.price }}
+                            {% if form.price.errors %}
+                                <span class="panel-field-error">{{ form.price.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="panel-form-group">
+                        <label for="id_description">Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <div class="panel-form-row">
+                        <div class="panel-form-group">
+                            <label for="id_marketplace_url">Marketplace URL</label>
+                            {{ form.marketplace_url }}
+                        </div>
+                        <div class="panel-form-group">
+                            <label for="id_inworld_slurl">In-World SLurl</label>
+                            {{ form.inworld_slurl }}
+                        </div>
+                    </div>
+
+                    <div class="panel-form-group panel-form-checkbox-group">
+                        {{ form.is_featured }}
+                        <label for="id_is_featured" class="panel-checkbox-label">
+                            <i class="fas fa-star"></i> Mark as Featured Product
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image URLs Card -->
+            <div class="panel-card fade-in">
+                <div class="panel-card-header">
+                    <h3><i class="fas fa-images"></i> Product Images</h3>
+                    <button type="button" class="btn btn-outline panel-btn-sm" onclick="addImageRow()">
+                        <i class="fas fa-plus"></i> Add Image
+                    </button>
+                </div>
+                <div class="panel-card-body">
+                    <p class="panel-help-text">
+                        Paste image URLs below. Images will be displayed in the order specified (lower = first).
+                    </p>
+                    <div class="panel-image-rows" id="panelImageRows">
+                        <!-- Rows injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="panel-form-actions fade-in">
+                <a href="{% url 'panel-products' %}" class="btn btn-outline">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    {% if editing %}Update Product{% else %}Create Product{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    const container = document.getElementById('panelImageRows');
+    let rowCount = 0;
+
+    // Pre-populate with existing images when editing
+    const existingImages = {{ existing_images|safe|default:"[]" }};
+
+    function createRow(url, order) {
+        const row = document.createElement('div');
+        row.className = 'panel-image-row';
+        row.innerHTML = `
+            <div class="panel-image-row-preview">
+                <img src="${url || ''}" alt="" onerror="this.style.display='none'"
+                     style="${url ? '' : 'display:none'}">
+                <div class="panel-image-row-placeholder" style="${url ? 'display:none' : ''}">
+                    <i class="fas fa-image"></i>
+                </div>
+            </div>
+            <div class="panel-image-row-fields">
+                <input type="url" name="image_urls" value="${url || ''}"
+                       placeholder="https://example.com/image.jpg"
+                       class="panel-input" oninput="previewImageUrl(this)">
+                <input type="number" name="image_orders" value="${order ?? rowCount}"
+                       placeholder="Order" class="panel-input panel-input-sm" min="0">
+            </div>
+            <button type="button" class="panel-btn-icon panel-btn-icon-danger"
+                    onclick="removeImageRow(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(row);
+        rowCount++;
+    }
+
+    window.addImageRow = function(url, order) {
+        createRow(url || '', order);
+    };
+
+    window.removeImageRow = function(btn) {
+        btn.closest('.panel-image-row').remove();
+    };
+
+    window.previewImageUrl = function(input) {
+        const row = input.closest('.panel-image-row');
+        const img = row.querySelector('.panel-image-row-preview img');
+        const placeholder = row.querySelector('.panel-image-row-placeholder');
+        const url = input.value.trim();
+        if (url) {
+            img.src = url;
+            img.style.display = '';
+            placeholder.style.display = 'none';
+            img.onerror = function() {
+                this.style.display = 'none';
+                placeholder.style.display = '';
+            };
+        } else {
+            img.style.display = 'none';
+            placeholder.style.display = '';
+        }
+    };
+
+    // Init
+    if (existingImages.length > 0) {
+        existingImages.forEach(function(img) {
+            createRow(img.image_url || '', img.order || 0);
+        });
+    } else {
+        createRow('', 0);
+    }
+})();
+</script>
+{% endblock %}

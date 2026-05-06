@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Products — Admin Panel — VASTIK{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     PRODUCTS LIST
+     ============================================================ -->
+<section class="page-header page-header-compact">
+    <div class="page-header-particles" id="pageHeaderParticles"></div>
+    <div class="container">
+        <div class="page-header-content fade-in">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'home' %}">Home</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <a href="{% url 'panel-dashboard' %}">Admin Panel</a>
+                <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+                <span>Products</span>
+            </nav>
+            <h1>Manage Products</h1>
+            <div class="mandala-divider">
+                <img src="{% static 'images/lotus.svg' %}" alt="">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section panel-products-section">
+    <div class="container">
+
+        {% if messages %}
+        <div class="panel-messages fade-in">
+            {% for message in messages %}
+            <div class="panel-alert panel-alert-{{ message.tags }}">
+                <i class="fas fa-check-circle"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Toolbar -->
+        <div class="panel-toolbar fade-in">
+            <form method="get" class="panel-search-form" id="panelSearchForm">
+                <div class="panel-search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="q" value="{{ search }}" placeholder="Search products..."
+                           class="panel-input" id="panelSearchInput">
+                </div>
+                <select name="category" class="panel-input panel-select" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    <option value="Mesh" {% if category == 'Mesh' %}selected{% endif %}>Mesh</option>
+                    <option value="Script" {% if category == 'Script' %}selected{% endif %}>Scripts</option>
+                    <option value="Texture" {% if category == 'Texture' %}selected{% endif %}>Textures</option>
+                </select>
+                <button type="submit" class="btn btn-outline panel-search-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+            <a href="{% url 'panel-product-add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Product
+            </a>
+        </div>
+
+        <!-- Product Count -->
+        <div class="panel-product-count fade-in">
+            <span>{{ products|length }} product{{ products|length|pluralize }}</span>
+            {% if search %}<span class="panel-filter-tag">Search: "{{ search }}" <a href="{% url 'panel-products' %}"><i class="fas fa-times"></i></a></span>{% endif %}
+            {% if category %}<span class="panel-filter-tag">{{ category }} <a href="{% url 'panel-products' %}{% if search %}?q={{ search }}{% endif %}"><i class="fas fa-times"></i></a></span>{% endif %}
+        </div>
+
+        <!-- Products Table -->
+        <div class="panel-table-wrapper fade-in">
+            {% if products %}
+            <table class="panel-table" id="panelProductsTable">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Serial</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price (L$)</th>
+                        <th>Featured</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td class="panel-td-image">
+                            {% with product.images.first as first_img %}
+                                {% if first_img %}
+                                    <img src="{{ first_img.src }}" alt="{{ product.name }}" class="panel-thumb">
+                                {% else %}
+                                    <div class="panel-thumb-placeholder">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td><span class="product-serial">{{ product.serial_number }}</span></td>
+                        <td class="panel-td-name">{{ product.name }}</td>
+                        <td><span class="product-category-tag">{{ product.category }}</span></td>
+                        <td class="panel-td-price">L${{ product.price|floatformat:"0" }}</td>
+                        <td>
+                            {% if product.is_featured %}
+                                <span class="panel-badge panel-badge-gold"><i class="fas fa-star"></i> Yes</span>
+                            {% else %}
+                                <span class="panel-badge panel-badge-muted">No</span>
+                            {% endif %}
+                        </td>
+                        <td class="panel-td-actions">
+                            <a href="{% url 'panel-product-edit' product.pk %}" class="panel-btn-icon" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'panel-product-delete' product.pk %}" class="panel-btn-icon panel-btn-icon-danger" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="panel-empty-state">
+                <i class="fas fa-box-open"></i>
+                <h3>No products found</h3>
+                <p>{% if search or category %}Try adjusting your filters.{% else %}Get started by adding your first product.{% endif %}</p>
+                <a href="{% url 'panel-product-add' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Product
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Back to Dashboard -->
+        <div class="panel-back fade-in">
+            <a href="{% url 'panel-dashboard' %}" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

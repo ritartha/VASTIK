@@ -8,9 +8,22 @@ from .models import Product, ProductImage
 class ProductImageSerializer(serializers.ModelSerializer):
     """Serializer for product images."""
 
+    image_src = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductImage
-        fields = ['id', 'image', 'order']
+        fields = ['id', 'image', 'image_url', 'image_src', 'order']
+
+    def get_image_src(self, obj):
+        """Return image_url if set, otherwise fall back to uploaded image."""
+        if obj.image_url:
+            return obj.image_url
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return ''
 
 
 class ProductSerializer(serializers.ModelSerializer):

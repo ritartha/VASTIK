@@ -53,7 +53,17 @@ class ProductImage(models.Model):
         on_delete=models.CASCADE,
         related_name='images'
     )
-    image = models.ImageField(upload_to='products/')
+    image = models.ImageField(
+        upload_to='products/',
+        blank=True,
+        null=True,
+        help_text="Upload an image file (optional if image_url is set)"
+    )
+    image_url = models.URLField(
+        blank=True,
+        default='',
+        help_text="External image URL (used instead of uploaded file)"
+    )
     order = models.PositiveIntegerField(
         default=0,
         help_text="Display order in slideshow (lower = first)"
@@ -61,6 +71,15 @@ class ProductImage(models.Model):
 
     class Meta:
         ordering = ['order']
+
+    @property
+    def src(self):
+        """Return the best available image source URL."""
+        if self.image_url:
+            return self.image_url
+        if self.image:
+            return self.image.url
+        return ''
 
     def __str__(self):
         return f"Image {self.order} for {self.product.name}"
