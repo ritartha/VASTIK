@@ -308,7 +308,7 @@ function createProductCard(product) {
 
     const images = product.images || [];
     const slideshowHTML = images.length > 0
-        ? images.map((img, i) => `<img src="${img.image}" alt="${product.name}" class="${i === 0 ? 'active' : ''}" loading="lazy" />`).join('')
+        ? images.map((img, i) => `<img src="${img.image_src}" alt="${product.name}" class="${i === 0 ? 'active' : ''}" loading="lazy" />`).join('')
         : `<img src="/static/images/mandala.svg" alt="No image" class="active" style="padding:40px;object-fit:contain;background:var(--bg-tertiary);" />`;
 
     const dotsHTML = images.length > 1
@@ -502,7 +502,7 @@ async function loadFeaturedProducts() {
     carousel.innerHTML = '';
 
     products.forEach(p => {
-        const img = (p.images && p.images[0]) ? p.images[0].image : '/static/images/mandala.svg';
+        const img = (p.images && p.images[0]) ? p.images[0].image_src : '/static/images/mandala.svg';
         const card = document.createElement('div');
         card.className = 'featured-card';
         card.innerHTML = `
@@ -732,7 +732,7 @@ async function loadProductDetail() {
     const images = p.images || [];
 
     if (mainImg && images.length > 0) {
-        mainImg.src = images[0].image;
+        mainImg.src = images[0].image_src;
         mainImg.alt = p.name;
     }
 
@@ -741,9 +741,9 @@ async function loadProductDetail() {
         images.forEach((img, i) => {
             const t = document.createElement('div');
             t.className = `product-thumb ${i === 0 ? 'active' : ''}`;
-            t.innerHTML = `<img src="${img.image}" alt="${p.name}" loading="lazy" />`;
+            t.innerHTML = `<img src="${img.image_src}" alt="${p.name}" loading="lazy" />`;
             t.addEventListener('click', () => {
-                if (mainImg) mainImg.src = img.image;
+                if (mainImg) mainImg.src = img.image_src;
                 thumbsEl.querySelectorAll('.product-thumb').forEach(el => el.classList.remove('active'));
                 t.classList.add('active');
             });
